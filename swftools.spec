@@ -6,7 +6,7 @@
 
 Name:           swftools
 Version:        0.9.1
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        SWF manipulation and generation utilities
 
 Group:          Applications/Multimedia
@@ -84,6 +84,9 @@ install -Dp lib/python/*.so $RPM_BUILD_ROOT%{python_sitearch}/
 
 
 %changelog
+* Fri Mar 02 2012 Nicolas Chauvet <kwizart@gmail.com> - 0.9.1-6
+- Rebuilt for c++ ABI breakage
+
 * Tue Jan 24 2012 Mohamed El Morabity <melmorabity@fedoraproject.org> - 0.9.1-5
 - Fix License tag
 
