@@ -5,8 +5,8 @@
 }
 
 Name:           swftools
-Version:        0.9.1
-Release:        5%{?dist}
+Version:        0.9.2
+Release:        1%{?dist}
 Summary:        SWF manipulation and generation utilities
 
 Group:          Applications/Multimedia
@@ -16,7 +16,9 @@ License:        GPLv3+ and LGPLv2+ and BSD
 URL:            http://www.swftools.org/
 Source0:        http://www.swftools.org/%{name}-%{version}.tar.gz
 # Add prefix to installation paths
-Patch0:         swftools-0.9.1-prefix.patch
+Patch0:         swftools-0.9.2-prefix.patch
+# Fix installation
+Patch1:         swftools-0.9.2-install.patch
 
 BuildRequires:  fftw-devel
 BuildRequires:  fontconfig-devel
@@ -44,6 +46,7 @@ This package provides Python bindings for %{name}.
 %prep
 %setup -q
 %patch0 -p1 -b .prefix
+%patch1 -p1 -b .install
 
 # Fix permissions
 chmod -x lib/*.[ch] lib/action/*.[ch]
@@ -84,6 +87,9 @@ install -Dp lib/python/*.so $RPM_BUILD_ROOT%{python_sitearch}/
 
 
 %changelog
+* Tue Apr 10 2012 Mohamed El Morabity <melmorabity@fedoraproject.org> - 0.9.2-1
+- Update to 0.9.2
+
 * Tue Jan 24 2012 Mohamed El Morabity <melmorabity@fedoraproject.org> - 0.9.1-5
 - Fix License tag
 
