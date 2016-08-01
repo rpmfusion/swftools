@@ -6,7 +6,7 @@
 
 Name:           swftools
 Version:        0.9.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        SWF manipulation and generation utilities
 
 Group:          Applications/Multimedia
@@ -87,6 +87,10 @@ install -Dp lib/python/*.so $RPM_BUILD_ROOT%{python_sitearch}/
 
 
 %changelog
+* Mon Aug 01 2016 Sérgio Basto <sergio@serjux.com> - 0.9.2-4
+-
+  https://fedoraproject.org/wiki/Changes/Automatic_Provides_for_Python_RPM_Packages
+
 * Sun Aug 31 2014 Sérgio Basto <sergio@serjux.com> - 0.9.2-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
 
