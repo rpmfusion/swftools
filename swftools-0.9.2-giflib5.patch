@@ -1,0 +1,70 @@
+diff -up ./src/gif2swf.c.orig ./src/gif2swf.c
+--- ./src/gif2swf.c.orig	2011-01-02 04:30:29.000000000 +0100
++++ ./src/gif2swf.c	2018-02-24 20:28:24.696622499 +0100
+@@ -66,6 +66,14 @@ enum disposal_method {
+ };
+ 
+ 
++void PrintGifError(int ErrorCode) {
++    const char *Err = GifErrorString(ErrorCode);
++    if (Err != NULL)
++        fprintf(stderr, "GIF-LIB error: %s.\n", Err);
++    else
++        fprintf(stderr, "GIF-LIB undefined error %d.\n", ErrorCode);
++}
++
+ void SetFrameAction(TAG ** t, const char *src, int ver)
+ {
+     ActionTAG *as;
+@@ -230,13 +238,13 @@ TAG *MovieAddFrame(SWF * swf, TAG * t, c
+     }
+     fclose(fi);
+ 
+-    if ((gft = DGifOpenFileName(sname)) == NULL) {
++    if ((gft = DGifOpenFileName(sname, NULL)) == NULL) {
+         fprintf(stderr, "%s is not a GIF file!\n", sname);
+         return t;
+     }
+ 
+     if (DGifSlurp(gft) != GIF_OK) {
+-        PrintGifError();
++        PrintGifError(gft->Error);
+         return t;
+     }
+ 
+@@ -455,7 +463,7 @@ TAG *MovieAddFrame(SWF * swf, TAG * t, c
+ 
+     free(pal);
+     free(imagedata);
+-    DGifCloseFile(gft);
++    DGifCloseFile(gft, NULL);
+ 
+     return t;
+ }
+@@ -488,7 +496,7 @@ int CheckInputFile(char *fname, char **r
+     }
+     fclose(fi);
+ 
+-    if ((gft = DGifOpenFileName(s)) == NULL) {
++    if ((gft = DGifOpenFileName(s, NULL)) == NULL) {
+         fprintf(stderr, "%s is not a GIF file!\n", fname);
+         return -1;
+     }
+@@ -499,7 +507,7 @@ int CheckInputFile(char *fname, char **r
+         global.max_image_height = gft->SHeight;
+ 
+     if (DGifSlurp(gft) != GIF_OK) { 
+-        PrintGifError();
++        PrintGifError(gft->Error);
+         return -1;
+     }
+     // After DGifSlurp() call, gft->ImageCount become available
+@@ -518,7 +526,7 @@ int CheckInputFile(char *fname, char **r
+             fprintf(stderr, "frame: %u, delay: %.3f sec\n", i + 1, getGifDelayTime(gft, i) / 100.0);
+     }
+ 
+-    DGifCloseFile(gft);
++    DGifCloseFile(gft, NULL);
+ 
+     return 0;
+ }

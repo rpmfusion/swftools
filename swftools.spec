@@ -11,6 +11,8 @@ URL:            http://www.swftools.org/
 Source0:        http://www.swftools.org/%{name}-%{version}.tar.gz
 # Fix installation
 Patch0:         swftools-0.9.2-install.patch
+# Fix build with giflib >= 5
+Patch1:         swftools-0.9.2-giflib5.patch
 
 BuildRequires:  fftw-devel
 BuildRequires:  fontconfig-devel
@@ -80,9 +82,10 @@ install -Dp lib/python/*.so $RPM_BUILD_ROOT%{python2_sitearch}/
 
 
 %changelog
-* Fri Feb 23 2018 Mohamed El Morabity <melmorabity@fedoraproject.org> - 0.9.2-7
+* Sat Feb 24 2018 Mohamed El Morabity <melmorabity@fedoraproject.org> - 0.9.2-7
 - Spec cleanup
 - Update for latest Python guidelines
+- Fix build with giflib >= 5
 
 * Thu Aug 31 2017 RPM Fusion Release Engineering <kwizart@rpmfusion.org> - 0.9.2-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
