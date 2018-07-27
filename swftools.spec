@@ -78,7 +78,7 @@ install -Dp lib/python/*.so $RPM_BUILD_ROOT%{python2_sitearch}/
 
 
 %files -n python2-%{name}
-%{python_sitearch}/*.so
+%{python2_sitearch}/*.so
 
 
 %changelog
