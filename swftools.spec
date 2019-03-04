@@ -14,7 +14,7 @@ Patch0:         swftools-0.9.2-install.patch
 # Fix build with giflib >= 5
 Patch1:         swftools-0.9.2-giflib5.patch
 
-BuildRequires:  gcc
+BuildRequires:  gcc-c++
 BuildRequires:  fftw-devel
 BuildRequires:  fontconfig-devel
 BuildRequires:  giflib-devel
