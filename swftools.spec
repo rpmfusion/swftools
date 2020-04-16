@@ -1,14 +1,13 @@
 Name:           swftools
 Version:        0.9.2
-Release:        12%{?dist}
+Release:        13%{?dist}
 Summary:        SWF manipulation and generation utilities
 
-Group:          Applications/Multimedia
 # swftools is GPLv2+ licensed, lib/MD5.c is BSD licensed,
 # lib/action/actioncompiler.c is LGPLv2+ licensed
 License:        GPLv3+ and LGPLv2+ and BSD
 URL:            http://www.swftools.org/
-Source0:        http://www.swftools.org/%{name}-%{version}.tar.gz
+Source0:        %{url}/%{name}-%{version}.tar.gz
 # Fix installation
 Patch0:         swftools-0.9.2-install.patch
 # Fix build with giflib >= 5
@@ -19,8 +18,7 @@ BuildRequires:  fftw-devel
 BuildRequires:  fontconfig-devel
 BuildRequires:  giflib-devel
 BuildRequires:  lame-devel
-BuildRequires:  python2-devel
-BuildRequires:  python2-pillow-devel
+BuildRequires:  libjpeg-turbo-devel
 BuildRequires:  zziplib-devel
 
 %description
@@ -28,16 +26,6 @@ SWFTools is a collection of utilities for working with Adobe Flash files (SWF
 files). The tool collection includes programs for reading SWF files, combining
 them, and creating them from other content (like images, sound files, videos or
 source code).
-
-
-%package -n python2-%{name}
-Summary:        Python bindings for %{name}
-Group:          System Environment/Libraries
-Requires:       %{name} = %{version}-%{release}
-%{?python_provide:%python_provide python2-%{name}}
-
-%description -n python2-%{name}
-This package provides Python bindings for %{name}.
 
 
 %prep
@@ -55,19 +43,12 @@ done
 
 
 %build
-export PYTHON_INCLUDES=$(python2-config --includes)/Imaging/
-export PYTHON_LIB=$(python2-config --libs)
-export PYTHON_LIB2=$PYTHON_LIB
-export HAVE_PYTHON_IMAGING_LIB=1
 %configure
 make %{?_smp_mflags}
 
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
-
-install -dm 0755 $RPM_BUILD_ROOT%{python2_sitearch}/
-install -Dp lib/python/*.so $RPM_BUILD_ROOT%{python2_sitearch}/
 
 
 %files
@@ -78,11 +59,11 @@ install -Dp lib/python/*.so $RPM_BUILD_ROOT%{python2_sitearch}/
 %{_datadir}/%{name}/
 
 
-%files -n python2-%{name}
-%{python2_sitearch}/*.so
-
-
 %changelog
+* Thu Apr 16 2020 Mohamed El Morabity <melmorabity@fedoraproject.org> - 0.9.2-13
+- Drop Python 2 module
+- Spec cleanup
+
 * Wed Feb 05 2020 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 0.9.2-12
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
 
