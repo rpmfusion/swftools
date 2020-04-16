@@ -43,6 +43,8 @@ done
 
 
 %build
+export CFLAGS="$RPM_OPT_FLAGS -fcommon"
+export CXXFLAGS="$CFLAGS"
 %configure
 make %{?_smp_mflags}
 
