@@ -1,0 +1,15 @@
+diff -up ./lib/pdf/xpdf/GlobalParams.cc.orig ./lib/pdf/xpdf/GlobalParams.cc
+--- ./lib/pdf/xpdf/GlobalParams.cc.orig	2021-02-04 16:51:27.238069595 +0000
++++ ./lib/pdf/xpdf/GlobalParams.cc	2021-02-04 17:02:56.875485395 +0000
+@@ -922,9 +922,9 @@ void GlobalParams::parseFile(GString *fi
+     char* p = pos1>pos2?pos1:pos2;
+     int pos = p ? p-cfgFileName : -1;
+     GString*path = new GString(new GString(cfgFileName), 0, (pos < 0 ? strlen(cfgFileName): pos));
+-    if(pos1>=0)
++    if(pos1)
+ 	path->append('/');
+-    else if(pos2>=0)
++    else if(pos2)
+ 	path->append('\\');
+     else
+ #ifdef WIN32
