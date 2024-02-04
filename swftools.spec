@@ -1,6 +1,6 @@
 Name:           swftools
 Version:        0.9.2
-Release:        20%{?dist}
+Release:        21%{?dist}
 Summary:        SWF manipulation and generation utilities
 
 # swftools is GPLv2+ licensed, lib/MD5.c is BSD licensed,
@@ -64,6 +64,9 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Feb 04 2024 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 0.9.2-21
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
+
 * Wed Aug 02 2023 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 0.9.2-20
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
 
