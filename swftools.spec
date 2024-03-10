@@ -1,26 +1,29 @@
+%global commit 772e55a271f66818b06c6e8c9b839befa51248f4
+%global shortcommit %(c=%{commit}; echo ${c:0:7})
+%global commitdate 20211216
+
+# Disable parallel build to avoid compilation issues
+%global _smp_mflags %{nil}
+
 Name:           swftools
-Version:        0.9.2
-Release:        21%{?dist}
+Version:        0.9.2^%{commitdate}git%{shortcommit}
+Release:        1%{?dist}
 Summary:        SWF manipulation and generation utilities
 
-# swftools is GPLv2+ licensed, lib/MD5.c is BSD licensed,
-# lib/action/actioncompiler.c is LGPLv2+ licensed
-License:        GPLv3+ and LGPLv2+ and BSD
+# swftools is GPL-2.0-or-later licensed, some libraries are LGPL-2.0-or-later/GPL-3.0-or-later
+License:        GPL-2.0-or-later AND LGPL-2.1-or-later AND GPL-3.0-or-later
 URL:            http://www.swftools.org/
-Source0:        %{url}/%{name}-%{version}.tar.gz
-# Fix installation
-Patch0:         swftools-0.9.2-install.patch
-# Fix build with giflib >= 5
-Patch1:         swftools-0.9.2-giflib5.patch
-# Fix build with GCC 11
-Patch2:         swftools-0.9.2-gcc11.patch
+Source0:        https://github.com/matthiaskramm/%{name}/archive/%{commit}/%{name}-%{shortcommit}.tar.gz
 
-BuildRequires:  gcc-c++
 BuildRequires:  fftw-devel
 BuildRequires:  fontconfig-devel
+BuildRequires:  gcc-c++
+BuildRequires:  freetype-devel
 BuildRequires:  giflib-devel
 BuildRequires:  lame-devel
 BuildRequires:  libjpeg-turbo-devel
+BuildRequires:  perl-interpreter
+BuildRequires:  zlib-devel
 BuildRequires:  zziplib-devel
 
 %description
@@ -31,13 +34,14 @@ source code).
 
 
 %prep
-%autosetup -p0
+%autosetup -n %{name}-%{commit}
 
-# Fix permissions
-chmod -x lib/*.[ch] lib/action/*.[ch]
+# Remove the bundled LAME library to ensure the build tools search for and use
+# the system's LAME library instead.
+rm -r lib/lame/
 
 # Fix encoding
-for file in AUTHORS src/{jpeg2swf.1,swfstrings.1}; do
+for file in AUTHORS COPYING src/{jpeg2swf.1,swfstrings.1}; do
   iconv -f ISO-8859-1 -t UTF-8 -o $file.new $file && \
   touch -r $file $file.new && \
   mv $file.new $file
@@ -45,18 +49,24 @@ done
 
 
 %build
-export CFLAGS="$RPM_OPT_FLAGS -fcommon"
-export CXXFLAGS="$CFLAGS"
 %configure
-make %{?_smp_mflags}
+%make_build \
 
 
 %install
-make install DESTDIR=$RPM_BUILD_ROOT
+%make_install \
+  bindir=$RPM_BUILD_ROOT%{_bindir} \
+  datadir=$RPM_BUILD_ROOT%{_datadir} \
+  libdir=$RPM_BUILD_ROOT%{_libdir} \
+  mandir=$RPM_BUILD_ROOT%{_mandir}
+
+# Fix absolute symlinks
+ln -sf tessel_loader.swf $RPM_BUILD_ROOT%{_datadir}/%{name}/swfs/default_loader.swf
+ln -sf simple_viewer.swf $RPM_BUILD_ROOT%{_datadir}/%{name}/swfs/default_viewer.swf
 
 
 %files
-%doc AUTHORS ChangeLog doc/fileformat.sc
+%doc AUTHORS ChangeLog README.md
 %license COPYING
 %{_bindir}/*
 %{_mandir}/man1/*.1.*
@@ -64,6 +74,9 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Mar 10 2024 Mohamed El Morabity <melmorabity@fedoraproject.org> - 0.9.2^20211216git772e55a-1
+- Update to latest snapshot
+
 * Sun Feb 04 2024 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 0.9.2-21
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
 
