@@ -7,7 +7,7 @@
 
 Name:           swftools
 Version:        0.9.2^%{commitdate}git%{shortcommit}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        SWF manipulation and generation utilities
 
 # swftools is GPL-2.0-or-later licensed, some libraries are LGPL-2.0-or-later/GPL-3.0-or-later
@@ -74,6 +74,9 @@ ln -sf simple_viewer.swf $RPM_BUILD_ROOT%{_datadir}/%{name}/swfs/default_viewer.
 
 
 %changelog
+* Fri Aug 02 2024 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 0.9.2^20211216git772e55a-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_41_Mass_Rebuild
+
 * Sun Mar 10 2024 Mohamed El Morabity <melmorabity@fedoraproject.org> - 0.9.2^20211216git772e55a-1
 - Update to latest snapshot
 
