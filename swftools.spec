@@ -7,13 +7,15 @@
 
 Name:           swftools
 Version:        0.9.2^%{commitdate}git%{shortcommit}
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        SWF manipulation and generation utilities
 
 # swftools is GPL-2.0-or-later licensed, some libraries are LGPL-2.0-or-later/GPL-3.0-or-later
 License:        GPL-2.0-or-later AND LGPL-2.1-or-later AND GPL-3.0-or-later
 URL:            http://www.swftools.org/
 Source0:        https://github.com/matthiaskramm/%{name}/archive/%{commit}/%{name}-%{shortcommit}.tar.gz
+# Support C23 strict function prototype
+Patch0:         swftools-c23.patch
 
 BuildRequires:  fftw-devel
 BuildRequires:  fontconfig-devel
@@ -34,7 +36,7 @@ source code).
 
 
 %prep
-%autosetup -n %{name}-%{commit}
+%autosetup -n %{name}-%{commit} -p1
 
 # Remove the bundled LAME library to ensure the build tools search for and use
 # the system's LAME library instead.
@@ -74,6 +76,9 @@ ln -sf simple_viewer.swf $RPM_BUILD_ROOT%{_datadir}/%{name}/swfs/default_viewer.
 
 
 %changelog
+* Fri Oct 10 2025 Mamoru TASAKA <mtasaka@fedoraproject.org> - 0.9.2^20211216git772e55a-5
+- Support C23 strict function prototypes
+
 * Sun Jul 27 2025 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 0.9.2^20211216git772e55a-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_43_Mass_Rebuild
 

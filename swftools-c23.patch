@@ -1,0 +1,144 @@
+diff --git a/lib/action/lex.swf4.c b/lib/action/lex.swf4.c
+index 4eb81d8..fd2eefa 100644
+--- a/lib/action/lex.swf4.c
++++ b/lib/action/lex.swf4.c
+@@ -860,6 +860,7 @@ void swf4ParseInit(const char *script, int debug)
+ 
+ #line 79 "swf4compiler.flex"
+  // forward declaration needed by the following function
++#define YY_USE_PROTOS
+ #ifndef YY_PROTO
+ #ifdef YY_USE_PROTOS
+ #define YY_PROTO(proto) proto
+diff --git a/lib/action/lex.swf5.c b/lib/action/lex.swf5.c
+index f3dc217..8939bc5 100644
+--- a/lib/action/lex.swf5.c
++++ b/lib/action/lex.swf5.c
+@@ -1089,6 +1089,7 @@ void swf5ParseInit(const char *script, int debug)
+ 
+ #line 88 "swf5compiler.flex"
+  // forward declaration needed by the following function
++#define YY_USE_PROTOS
+ #ifndef YY_PROTO
+ #ifdef YY_USE_PROTOS
+ #define YY_PROTO(proto) proto
+diff --git a/lib/action/swf4compiler.flex b/lib/action/swf4compiler.flex
+index 6a6dddd..4c2f62b 100755
+--- a/lib/action/swf4compiler.flex
++++ b/lib/action/swf4compiler.flex
+@@ -77,6 +77,7 @@ void swf4ParseInit(const char *script, int debug)
+ 
+ %{
+  // forward declaration needed by the following function
++#define YY_USE_PROTOS
+ #ifndef YY_PROTO
+ #ifdef YY_USE_PROTOS
+ #define YY_PROTO(proto) proto
+diff --git a/lib/action/swf5compiler.flex b/lib/action/swf5compiler.flex
+index e100fc2..7ccf321 100644
+--- a/lib/action/swf5compiler.flex
++++ b/lib/action/swf5compiler.flex
+@@ -86,6 +86,7 @@ void swf5ParseInit(const char *script, int debug)
+ 
+ %{
+  // forward declaration needed by the following function
++#define YY_USE_PROTOS
+ #ifndef YY_PROTO
+ #ifdef YY_USE_PROTOS
+ #define YY_PROTO(proto) proto
+diff --git a/lib/as3/parser.tab.c b/lib/as3/parser.tab.c
+index 71d77cd..7887dd3 100644
+--- a/lib/as3/parser.tab.c
++++ b/lib/as3/parser.tab.c
+@@ -4658,7 +4658,7 @@ PASS12
+ 
+ /* Line 1464 of skeleton.m4  */
+ #line 1165 "parser.y"
+-    {(yyval.constant) = constant_new_true((yyvsp[(1) - (1)].token));}
++    {(yyval.constant) = constant_new_true();}
+     }
+     break;
+ 
+@@ -4669,7 +4669,7 @@ PASS12
+ 
+ /* Line 1464 of skeleton.m4  */
+ #line 1166 "parser.y"
+-    {(yyval.constant) = constant_new_false((yyvsp[(1) - (1)].token));}
++    {(yyval.constant) = constant_new_false();}
+     }
+     break;
+ 
+@@ -4680,7 +4680,7 @@ PASS12
+ 
+ /* Line 1464 of skeleton.m4  */
+ #line 1167 "parser.y"
+-    {(yyval.constant) = constant_new_null((yyvsp[(1) - (1)].token));}
++    {(yyval.constant) = constant_new_null();}
+     }
+     break;
+ 
+@@ -4691,7 +4691,7 @@ PASS12
+ 
+ /* Line 1464 of skeleton.m4  */
+ #line 1168 "parser.y"
+-    {(yyval.constant) = constant_new_undefined((yyvsp[(1) - (1)].token));}
++    {(yyval.constant) = constant_new_undefined();}
+     }
+     break;
+ 
+diff --git a/lib/as3/parser.y b/lib/as3/parser.y
+index 09dcb7e..5981a59 100644
+--- a/lib/as3/parser.y
++++ b/lib/as3/parser.y
+@@ -1162,10 +1162,10 @@ CONSTANT : T_UINT {
+ }
+ CONSTANT : T_FLOAT {$$ = constant_new_float($1);}
+ CONSTANT : T_STRING {$$ = constant_new_string2($1.str,$1.len);free((char*)$1.str);}
+-CONSTANT : "true" {$$ = constant_new_true($1);}
+-CONSTANT : "false" {$$ = constant_new_false($1);}
+-CONSTANT : "null" {$$ = constant_new_null($1);}
+-CONSTANT : "undefined" {$$ = constant_new_undefined($1);}
++CONSTANT : "true" {$$ = constant_new_true();}
++CONSTANT : "false" {$$ = constant_new_false();}
++CONSTANT : "null" {$$ = constant_new_null();}
++CONSTANT : "undefined" {$$ = constant_new_undefined();}
+ CONSTANT : KW_NAN {$$ = constant_new_float(__builtin_nan(""));}
+ 
+ /* ---------------------------xml ------------------------------ */
+diff --git a/lib/as3/pool.h b/lib/as3/pool.h
+index 632fa7f..c42b977 100644
+--- a/lib/as3/pool.h
++++ b/lib/as3/pool.h
+@@ -96,7 +96,7 @@ struct _constant {
+     };
+ };
+ 
+-constant_t* constant_clone();
++constant_t* constant_clone(constant_t*other);
+ constant_t* constant_new_int(int x);
+ constant_t* constant_new_uint(unsigned int x);
+ constant_t* constant_new_float(double x);
+@@ -208,7 +208,7 @@ void namespace_destroy(namespace_t*n);
+ 
+ /* pool constructors/destructors */
+ pool_t*pool_new();
+-void pool_optimize();
++void pool_optimize(pool_t*p);
+ void pool_read(pool_t*pool, TAG*tag);
+ void pool_write(pool_t*pool, TAG*tag);
+ void pool_destroy(pool_t*pool);
+diff --git a/lib/as3/registry.h b/lib/as3/registry.h
+index d7ad449..7e353b5 100644
+--- a/lib/as3/registry.h
++++ b/lib/as3/registry.h
+@@ -138,8 +138,8 @@ void registry_fill_multiname(multiname_t*m, namespace_t*n, slotinfo_t*c);
+ 
+ multiname_t* classinfo_to_multiname(slotinfo_t*cls);
+ 
+-char registry_isfunctionclass();
+-char registry_isclassclass();
++char registry_isfunctionclass(classinfo_t*c);
++char registry_isclassclass(classinfo_t*c);
+ 
+ classinfo_t* slotinfo_asclass(slotinfo_t*f);
+ classinfo_t* slotinfo_gettype(slotinfo_t*);
